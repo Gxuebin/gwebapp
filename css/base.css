@@ -1,0 +1,172 @@
+@charset "utf-8";
+/* CSS Document */
+a, address, body, dd, div, dl, dt, em, form, h1, h2, h3, h4, h5, h6, html, img, input, li, ol, p, span, strong, textarea, ul {
+    margin: 0;
+    padding: 0
+}
+
+body {
+    font: 100 12px/160% 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', 'sans-serif', 'HanHei SC', 'PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', 'Arial', 'sans-serif', 'microsoft yahei', '\u5B8B\u4F53';
+    min-width: 1200px;
+    *width: 1200px;
+}
+
+ul, li, ol {
+    list-style: none;
+}
+
+input, button, textarea {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+input[type="button"], input[type="submit"] {
+    cursor: pointer;
+}
+
+a, img {
+    border: none;
+    max-width: 100%;
+}
+
+img {
+    vertical-align: middle;
+}
+
+a {
+    color: #6c6c6c;
+    text-decoration: none;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+em, i {
+    font-style: normal
+}
+
+address, cite, dfn, em, var {
+    font-style: normal;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+tbody, td, tfoot, thead, tr {
+    margin: 0
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 12px;
+    font-weight: 400
+}
+
+::selection {
+    background: #e57779;
+    color: #fff
+}
+
+::-webkit-selection {
+    background: #e57779;
+    color: #fff
+}
+
+::-moz-selection {
+    background: #e57779;
+    color: #fff
+}
+
+article, aside, figure, footer, header, nav, section {
+    display: block
+}
+
+.clr, .clear {
+    display: block;
+    overflow: hidden;
+    clear: both;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+}
+
+.clfx:after, .clearfix:after {
+    content: "";
+    display: block;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+    clear: both;
+    visibility: hidden;
+}
+
+.clfx, .clearfix {
+    zoom: 1;
+}
+
+.pr {
+    position: relative;
+    z-index: 0
+}
+
+.pa {
+    position: absolute
+}
+
+.pf {
+    position: fixed
+}
+
+.tin {
+    text-indent: 2em
+}
+
+.tac {
+    text-align: center
+}
+
+.tal {
+    text-align: left
+}
+
+.tar {
+    text-align: right
+}
+
+.fl {
+    float: left
+}
+
+.fr {
+    float: right
+}
+
+.wrap {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+/*限制行数【line-height: 1.3em;-webkit-line-clamp: 2;max-height: 2.6em;属性可自行调整】*/
+.lr1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lr2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /*line-height: .13rem;max-height: .26rem;*/
+}
+
+.lr3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
