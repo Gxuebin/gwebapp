@@ -1,31 +1,70 @@
-import { LANGUAGES } from '../constants'
-import type { LanguageOption } from '../types'
+import { LANGUAGES, SORTS } from '../constants'
+import type { LanguageOption, SortOption } from '../types'
 
 interface FilterBarProps {
-  value: LanguageOption
-  onChange: (language: LanguageOption) => void
+  language: LanguageOption
+  search: string
+  sort: SortOption
+  onLanguageChange: (language: LanguageOption) => void
+  onSearchChange: (value: string) => void
+  onSearchSubmit: () => void
+  onSortChange: (sort: SortOption) => void
   onRefresh: () => void
   loading: boolean
 }
 
-export function FilterBar({ value, onChange, onRefresh, loading }: FilterBarProps) {
+export function FilterBar({
+  language,
+  search,
+  sort,
+  onLanguageChange,
+  onSearchChange,
+  onSearchSubmit,
+  onSortChange,
+  onRefresh,
+  loading,
+}: FilterBarProps) {
   return (
-    <div className="toolbar">
+    <div className="toolbar-shell">
+      <div className="search-row">
+        <input
+          className="search-input"
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              onSearchSubmit()
+            }
+          }}
+          placeholder="Search repositories, topics, or keywords"
+        />
+        <select className="sort-select" value={sort} onChange={(event) => onSortChange(event.target.value as SortOption)}>
+          {SORTS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <button className="primary-btn" onClick={onSearchSubmit} disabled={loading}>
+          Search
+        </button>
+        <button className="ghost-btn" onClick={onRefresh} disabled={loading}>
+          {loading ? 'Loading...' : 'Refresh'}
+        </button>
+      </div>
+
       <div className="tabs">
-        {LANGUAGES.map((language) => (
+        {LANGUAGES.map((item) => (
           <button
-            key={language}
-            className={language === value ? 'tab active' : 'tab'}
-            onClick={() => onChange(language)}
+            key={item}
+            className={item === language ? 'tab active' : 'tab'}
+            onClick={() => onLanguageChange(item)}
             disabled={loading}
           >
-            {language}
+            {item}
           </button>
         ))}
       </div>
-      <button className="refresh-btn" onClick={onRefresh} disabled={loading}>
-        {loading ? 'Loading...' : 'Refresh'}
-      </button>
     </div>
   )
 }

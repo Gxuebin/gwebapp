@@ -1,15 +1,29 @@
-import type { LanguageOption, RepoItem } from './types'
+import type { LanguageOption, RepoItem, SortOption } from './types'
 
 const API_BASE = 'https://api.github.com/search/repositories'
+const PER_PAGE = 12
 
 const languageToQuery = (language: LanguageOption) => {
-  if (language === 'All') return 'stars:>1'
-  return `stars:>1 language:${language}`
+  if (language === 'All') return 'stars:>50'
+  return `stars:>50 language:${language}`
 }
 
-export async function fetchTrendingRepos(language: LanguageOption): Promise<RepoItem[]> {
-  const query = encodeURIComponent(languageToQuery(language))
-  const url = `${API_BASE}?q=${query}&sort=stars&order=desc&per_page=20`
+interface FetchTrendingParams {
+  language: LanguageOption
+  page: number
+  search: string
+  sort: SortOption
+}
+
+export async function fetchTrendingRepos({ language, page, search, sort }: FetchTrendingParams): Promise<RepoItem[]> {
+  const parts = [languageToQuery(language)]
+
+  if (search.trim()) {
+    parts.push(search.trim())
+  }
+
+  const query = encodeURIComponent(parts.join(' '))
+  const url = `${API_BASE}?q=${query}&sort=${sort}&order=desc&per_page=${PER_PAGE}&page=${page}`
 
   const response = await fetch(url, {
     headers: {
