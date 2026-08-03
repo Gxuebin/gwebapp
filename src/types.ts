@@ -1,5 +1,7 @@
 export type LanguageOption = 'All' | 'TypeScript' | 'JavaScript' | 'Python' | 'Go' | 'Rust' | 'Java'
 export type SortOption = 'stars' | 'updated'
+export type LayoutMode = 'card' | 'list' | 'masonry' | 'grouped' | 'detail'
+export type ThemeMode = 'dark' | 'light'
 
 export interface RepoItem {
   id: number

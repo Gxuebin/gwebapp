@@ -1,79 +1,52 @@
-import { LANGUAGES, SORTS } from '../constants'
-import type { LanguageOption, SortOption } from '../types'
-
 interface FilterBarProps {
-  language: LanguageOption
   search: string
-  sort: SortOption
-  onLanguageChange: (language: LanguageOption) => void
   onSearchChange: (value: string) => void
   onSearchSubmit: () => void
-  onSortChange: (sort: SortOption) => void
   onRefresh: () => void
   loading: boolean
   loadingMore: boolean
 }
 
 export function FilterBar({
-  language,
   search,
-  sort,
-  onLanguageChange,
   onSearchChange,
   onSearchSubmit,
-  onSortChange,
   onRefresh,
   loading,
-  loadingMore,
+  loadingMore: _loadingMore,
 }: FilterBarProps) {
-  const busy = loading || loadingMore
-
   return (
     <div className="toolbar-shell">
-      <div className="search-row">
-        <input
-          className="search-input"
-          value={search}
-          disabled={busy}
-          onChange={(event) => onSearchChange(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' && !busy) {
-              onSearchSubmit()
-            }
-          }}
-          placeholder="Search repositories, topics, or keywords"
-        />
-        <select
-          className="sort-select"
-          value={sort}
-          onChange={(event) => onSortChange(event.target.value as SortOption)}
-          disabled={busy}
-        >
-          {SORTS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <button className="primary-btn" onClick={onSearchSubmit} disabled={busy}>
-          Search
-        </button>
-        <button className="ghost-btn" onClick={onRefresh} disabled={busy}>
-          {loading ? 'Loading...' : 'Refresh'}
-        </button>
-      </div>
-
-      <div className="tabs">
-        {LANGUAGES.map((item) => (
-          <button
-            key={item}
-            className={item === language ? 'tab active' : 'tab'}
-            onClick={() => onLanguageChange(item)}
-            disabled={busy}
-          >
-            {item}
-          </button>
-        ))}
+      <div className="toolbar-primary">
+        <div className="toolbar-search">
+          <div className="toolbar-search-copy">
+            <label className="toolbar-search-label" htmlFor="repo-search-input">
+              搜索仓库
+            </label>
+            <span className="toolbar-search-hint">输入关键词后按 Enter 查询，筛选与展示偏好在左侧面板中调整。</span>
+          </div>
+          <div className="search-inline">
+            <input
+              id="repo-search-input"
+              className="search-input"
+              value={search}
+              onChange={(event) => onSearchChange(event.target.value)}
+              onKeyDown={(event) => {
+                const nativeEvent = event.nativeEvent as KeyboardEvent
+                if (event.key === 'Enter' && !nativeEvent.isComposing) {
+                  onSearchSubmit()
+                }
+              }}
+              placeholder="搜索仓库名称、描述或关键词"
+            />
+            <button className="primary-btn" onClick={onSearchSubmit} disabled={loading}>
+              查询
+            </button>
+            <button className="ghost-btn ghost-btn--refresh" onClick={onRefresh} disabled={loading}>
+              {loading ? '刷新中' : '刷新'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
