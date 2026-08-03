@@ -1,5 +1,7 @@
 export type LanguageOption = 'All' | 'TypeScript' | 'JavaScript' | 'Python' | 'Go' | 'Rust' | 'Java'
 export type SortOption = 'stars' | 'updated'
+export type LayoutMode = 'card' | 'list' | 'masonry' | 'grouped' | 'detail'
+export type ThemeMode = 'dark' | 'light'
 
 export interface RepoItem {
   id: number
@@ -14,7 +16,6 @@ export interface RepoItem {
   open_issues_count: number
   watchers_count: number
   homepage: string | null
-  topics?: string[]
   owner: {
     login: string
     avatar_url: string

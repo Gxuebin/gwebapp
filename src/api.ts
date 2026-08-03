@@ -15,11 +15,23 @@ interface FetchTrendingParams {
   sort: SortOption
 }
 
+function sanitizeSearch(value: string) {
+  const tokens = value
+    .trim()
+    .split(/\s+/)
+    .map((token) => token.replace(/"/g, ''))
+    .filter(Boolean)
+
+  if (tokens.length === 0) return ''
+  return tokens.map((token) => `"${token}"`).join(' ')
+}
+
 export async function fetchTrendingRepos({ language, page, search, sort }: FetchTrendingParams): Promise<RepoItem[]> {
   const parts = [languageToQuery(language)]
 
-  if (search.trim()) {
-    parts.push(search.trim())
+  const safeSearch = sanitizeSearch(search)
+  if (safeSearch) {
+    parts.push(safeSearch)
   }
 
   const query = encodeURIComponent(parts.join(' '))
@@ -32,7 +44,37 @@ export async function fetchTrendingRepos({ language, page, search, sort }: Fetch
   })
 
   if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`)
+    const remaining = response.headers.get('x-ratelimit-remaining')
+    const reset = response.headers.get('x-ratelimit-reset')
+    const retryAfter = response.headers.get('retry-after')
+    const contentType = response.headers.get('content-type') ?? ''
+    let apiMessage = ''
+
+    try {
+      if (contentType.includes('application/json')) {
+        const body = (await response.json()) as { message?: unknown }
+        apiMessage = typeof body?.message === 'string' ? body.message : ''
+      } else {
+        apiMessage = (await response.text()).trim()
+      }
+    } catch {
+      apiMessage = ''
+    }
+
+    if ((response.status === 403 || response.status === 429) && (remaining === '0' || retryAfter || reset)) {
+      const resetTime = reset ? new Date(Number(reset) * 1000).toLocaleString() : null
+      const retrySeconds = retryAfter ? Number(retryAfter) : null
+      const pieces = ['GitHub API rate limit exceeded.']
+      if (retrySeconds && Number.isFinite(retrySeconds)) {
+        pieces.push(`Retry after ${retrySeconds}s.`)
+      }
+      if (resetTime) {
+        pieces.push(`Reset at ${resetTime}.`)
+      }
+      throw new Error(pieces.join(' '))
+    }
+
+    throw new Error(`GitHub API error: ${response.status}${apiMessage ? ` - ${apiMessage}` : ''}`)
   }
 
   const data = (await response.json()) as { items?: RepoItem[] }
