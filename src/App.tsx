@@ -1,12 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { FilterBar } from './components/FilterBar'
 import { RepoCard } from './components/RepoCard'
 import { StatsBar } from './components/StatsBar'
+import { SORTS } from './constants'
 import { useTrendingStore } from './store'
 
 export default function App() {
+  const didInit = useRef(false)
   const {
     language,
+    searchInput,
     search,
     sort,
     repos,
@@ -16,7 +19,7 @@ export default function App() {
     lastUpdated,
     hasMore,
     setLanguage,
-    setSearch,
+    setSearchInput,
     applySearch,
     setSort,
     refresh,
@@ -24,8 +27,12 @@ export default function App() {
   } = useTrendingStore()
 
   useEffect(() => {
+    if (didInit.current) return
+    didInit.current = true
     void refresh()
   }, [refresh])
+
+  const sortLabel = SORTS.find((item) => item.value === sort)?.label ?? sort
 
   return (
     <main className="page">
@@ -42,20 +49,21 @@ export default function App() {
 
       <FilterBar
         language={language}
-        search={search}
+        search={searchInput}
         sort={sort}
         onLanguageChange={(next) => void setLanguage(next)}
-        onSearchChange={setSearch}
+        onSearchChange={setSearchInput}
         onSearchSubmit={() => void applySearch()}
         onSortChange={(next) => void setSort(next)}
         onRefresh={() => void refresh()}
         loading={loading}
+        loadingMore={loadingMore}
       />
 
       <StatsBar
         count={repos.length}
         language={language}
-        sortLabel={sort === 'stars' ? 'Most Stars' : 'Recently Updated'}
+        sortLabel={sortLabel}
         search={search}
         lastUpdated={lastUpdated}
       />

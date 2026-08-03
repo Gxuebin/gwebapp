@@ -23,16 +23,6 @@ export function RepoCard({ repo }: RepoCardProps) {
 
       <p className="repo-description">{repo.description || 'No description provided.'}</p>
 
-      {repo.topics && repo.topics.length > 0 ? (
-        <div className="topic-list">
-          {repo.topics.slice(0, 3).map((topic) => (
-            <span key={topic} className="topic-pill">
-              {topic}
-            </span>
-          ))}
-        </div>
-      ) : null}
-
       <div className="repo-meta">
         <span>⭐ {repo.stargazers_count.toLocaleString()}</span>
         <span>🍴 {repo.forks_count.toLocaleString()}</span>

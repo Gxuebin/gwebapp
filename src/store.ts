@@ -6,6 +6,7 @@ let requestId = 0
 
 interface TrendingState {
   language: LanguageOption
+  searchInput: string
   search: string
   sort: SortOption
   repos: RepoItem[]
@@ -16,7 +17,7 @@ interface TrendingState {
   page: number
   hasMore: boolean
   setLanguage: (language: LanguageOption) => Promise<void>
-  setSearch: (search: string) => void
+  setSearchInput: (search: string) => void
   applySearch: () => Promise<void>
   setSort: (sort: SortOption) => Promise<void>
   refresh: () => Promise<void>
@@ -54,6 +55,7 @@ async function loadPage(
 
 export const useTrendingStore = create<TrendingState>((set, get) => ({
   language: 'All',
+  searchInput: '',
   search: '',
   sort: 'stars',
   repos: [],
@@ -64,16 +66,27 @@ export const useTrendingStore = create<TrendingState>((set, get) => ({
   page: 1,
   hasMore: true,
   setLanguage: async (language) => {
-    set({ language, page: 1, repos: [], hasMore: true })
+    const state = get()
+    if (state.language === language) return
+    set({ language, page: 1, repos: [], hasMore: true, loading: true, error: null })
     await get().refresh()
   },
-  setSearch: (search) => set({ search }),
+  setSearchInput: (searchInput) => set({ searchInput }),
   applySearch: async () => {
-    set({ page: 1, repos: [], hasMore: true })
+    set((state) => ({
+      search: state.searchInput.trim(),
+      page: 1,
+      repos: [],
+      hasMore: true,
+      loading: true,
+      error: null,
+    }))
     await get().refresh()
   },
   setSort: async (sort) => {
-    set({ sort, page: 1, repos: [], hasMore: true })
+    const state = get()
+    if (state.sort === sort) return
+    set({ sort, page: 1, repos: [], hasMore: true, loading: true, error: null })
     await get().refresh()
   },
   refresh: async () => {
@@ -87,6 +100,8 @@ export const useTrendingStore = create<TrendingState>((set, get) => ({
       set({
         loading: false,
         loadingMore: false,
+        repos: [],
+        page: 1,
         error: error instanceof Error ? error.message : 'Unknown error',
       })
     }

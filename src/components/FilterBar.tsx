@@ -11,6 +11,7 @@ interface FilterBarProps {
   onSortChange: (sort: SortOption) => void
   onRefresh: () => void
   loading: boolean
+  loadingMore: boolean
 }
 
 export function FilterBar({
@@ -23,32 +24,41 @@ export function FilterBar({
   onSortChange,
   onRefresh,
   loading,
+  loadingMore,
 }: FilterBarProps) {
+  const busy = loading || loadingMore
+
   return (
     <div className="toolbar-shell">
       <div className="search-row">
         <input
           className="search-input"
           value={search}
+          disabled={busy}
           onChange={(event) => onSearchChange(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !busy) {
               onSearchSubmit()
             }
           }}
           placeholder="Search repositories, topics, or keywords"
         />
-        <select className="sort-select" value={sort} onChange={(event) => onSortChange(event.target.value as SortOption)}>
+        <select
+          className="sort-select"
+          value={sort}
+          onChange={(event) => onSortChange(event.target.value as SortOption)}
+          disabled={busy}
+        >
           {SORTS.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-        <button className="primary-btn" onClick={onSearchSubmit} disabled={loading}>
+        <button className="primary-btn" onClick={onSearchSubmit} disabled={busy}>
           Search
         </button>
-        <button className="ghost-btn" onClick={onRefresh} disabled={loading}>
+        <button className="ghost-btn" onClick={onRefresh} disabled={busy}>
           {loading ? 'Loading...' : 'Refresh'}
         </button>
       </div>
@@ -59,7 +69,7 @@ export function FilterBar({
             key={item}
             className={item === language ? 'tab active' : 'tab'}
             onClick={() => onLanguageChange(item)}
-            disabled={loading}
+            disabled={busy}
           >
             {item}
           </button>

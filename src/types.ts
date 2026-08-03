@@ -14,7 +14,6 @@ export interface RepoItem {
   open_issues_count: number
   watchers_count: number
   homepage: string | null
-  topics?: string[]
   owner: {
     login: string
     avatar_url: string
