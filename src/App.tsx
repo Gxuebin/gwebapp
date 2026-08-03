@@ -24,10 +24,8 @@ export default function App() {
   } = useTrendingStore()
 
   useEffect(() => {
-    if (repos.length === 0) {
-      void refresh()
-    }
-  }, [repos.length, refresh])
+    void refresh()
+  }, [refresh])
 
   return (
     <main className="page">

@@ -1,7 +1,7 @@
 import type { LanguageOption, RepoItem, SortOption } from './types'
 
 const API_BASE = 'https://api.github.com/search/repositories'
-const PER_PAGE = 12
+export const PER_PAGE = 12
 
 const languageToQuery = (language: LanguageOption) => {
   if (language === 'All') return 'stars:>50'

@@ -3,7 +3,7 @@ $(function () {
     (function () {
         var on = $(".on").innerWidth();
         var onLeft = $(".on").position().left + 40 + "px";
-        $(".header-line").css({"width": "on", "left": "onLeft"})
+        $(".header-line").css({"width": on, "left": onLeft})
         $(".header-navs-list a").hover(function () {
             var aLeft = $(this).position().left + 40 + "px";
             $(".header-line").stop().animate({
@@ -59,11 +59,12 @@ $(function () {
         fade($(".message-right"), 'animated bounceInRight');
         function fade($class, animate) {
             $class.each(function () {
-                var $top = $(this).position().top;
+                var $el = $(this);
+                var $top = $el.position().top;
                 if ($Scroll + $Hwindow > $top) {
-                    $(this).addClass(animate);
+                    $el.addClass(animate);
                     setTimeout(function () {
-                        $(this).removeClass(animate);
+                        $el.removeClass(animate);
                     }, 20)
                 }
             });
@@ -121,17 +122,17 @@ $(function () {
             }
         }
         if ($('textarea').val() == '') {
-            $("textarea").html("请填写您的留言");
+            $("textarea").val("请填写您的留言");
             $("textarea").focus();
             return false;
         }
 
     });
     $('.mess-form li input[type=text]').keyup(function () {
-        $(this).siblings(".online_form .bt").css('display', 'none');
+        $(this).siblings(".bt").css('display', 'none');
     });
     $('.mess-form li input[type=text]').mousedown(function () {
-        $(this).siblings(".mess-forms .bt").css('display', 'none');
+        $(this).siblings(".bt").css('display', 'none');
     });
 
 
